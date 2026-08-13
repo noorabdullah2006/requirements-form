@@ -1,4 +1,4 @@
-const API = 'http://localhost:5000/api/admin';
+const API = `${import.meta.env.VITE_API_URL}/api/admin`;
 
 const headers = (token) => ({ 'Authorization': `Bearer ${token}` });
 const authFetch = async (url, token, opts = {}) => {

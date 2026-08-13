@@ -13,7 +13,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+    'http://localhost:5173',
+    process.env.FRONTEND_URL // Your Vercel URL e.g. https://your-app.vercel.app
+].filter(Boolean);
+
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true
+}));
 app.use(express.json()); // Crucial for parsing req.body JSON details
 
 // API Routing Mount
@@ -81,7 +89,13 @@ app.get('/api/test-tables', async (req, res) => {
     }
 });
 
-// Start Server listening
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// Start Server listening (local dev only)
+// On Vercel, the serverless runtime handles this — we just export `app`
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
+
